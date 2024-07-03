@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsEnsemble", "src\fsEnsemble.fsproj", "{B1229F68-5C48-44CC-A10D-AB4BEF8B0E66}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsEnsemble.Tests", "tests\fsEnsemble.Tests.fsproj", "{7115D7B3-FF0D-4CF1-94B6-F544C549519C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F971637A-0A75-4475-ACD4-E5D70830585C}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1229F68-5C48-44CC-A10D-AB4BEF8B0E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1229F68-5C48-44CC-A10D-AB4BEF8B0E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1229F68-5C48-44CC-A10D-AB4BEF8B0E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1229F68-5C48-44CC-A10D-AB4BEF8B0E66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
