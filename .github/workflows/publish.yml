@@ -1,0 +1,36 @@
+name: publish to nuget
+
+on:
+  push:
+    branches:
+      - master # Default release branch
+
+jobs:
+  publish:
+    name: build, pack & publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore fsEnsemble.sln
+
+      - name: Get version from fsEnsemble.fsproj
+        id: get_version
+        run: |
+          version=$(grep '<Version>' src/fsEnsemble.fsproj | sed 's/.*<Version>\(.*\)<\/Version>.*/\1/')
+          echo "::set-output name=VERSION::$version"
+
+      - name: Build
+        run: dotnet build fsEnsemble.sln --no-restore --configuration Release
+
+      - name: Pack
+        run: dotnet pack src/fsEnsemble.fsproj --no-build --configuration Release --output ./artifacts /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+
+      - name: Publish to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
