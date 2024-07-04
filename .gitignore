@@ -401,3 +401,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ignore the fsScratch project directory
+fsScratch/
+
+# Ignore the csScratch project directory
+csScratch/

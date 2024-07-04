@@ -11,6 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fsScratch", "fsScratch\fsScratch.fsproj", "{119EDF4A-CE1E-4784-9670-120914C90558}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csScratch", "csScratch\csScratch.csproj", "{A8ED8950-7502-44F9-A9C4-7E72FEC7E075}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scratch Projects (Never Checked In)", "Scratch Projects (Never Checked In)", "{5F70E00D-FB2D-4417-A248-CB493EF2156E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,5 +31,17 @@ Global
 		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7115D7B3-FF0D-4CF1-94B6-F544C549519C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{119EDF4A-CE1E-4784-9670-120914C90558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119EDF4A-CE1E-4784-9670-120914C90558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119EDF4A-CE1E-4784-9670-120914C90558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119EDF4A-CE1E-4784-9670-120914C90558}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8ED8950-7502-44F9-A9C4-7E72FEC7E075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8ED8950-7502-44F9-A9C4-7E72FEC7E075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8ED8950-7502-44F9-A9C4-7E72FEC7E075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8ED8950-7502-44F9-A9C4-7E72FEC7E075}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8ED8950-7502-44F9-A9C4-7E72FEC7E075} = {5F70E00D-FB2D-4417-A248-CB493EF2156E}
+		{119EDF4A-CE1E-4784-9670-120914C90558} = {5F70E00D-FB2D-4417-A248-CB493EF2156E}
 	EndGlobalSection
 EndGlobal
