@@ -12,6 +12,7 @@
         <PackageProjectUrl>https://github.com/philiplaureano/fsEnsemble</PackageProjectUrl>
         <RepositoryUrl>https://github.com/philiplaureano/fsEnsemble</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
