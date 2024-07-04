@@ -15,10 +15,12 @@ The primary goal of fsEnsemble is to provide a simple and unified interface for 
 
 ## Installation
 
-TODO: Instructions for installation
+You can install the `fsEnsemble` package from NuGet:
 
 ## Usage
-
+```bash
+dotnet add package fsEnsemble
+```
 ### Adding a Client
 
 To use fsEnsemble, you'll need to set up clients for the supported LLM providers. Here’s an example of how to set up and use OpenAI and Google Gemini clients.
@@ -53,3 +55,87 @@ let result = runLLMQuery chatGptClient prompt temperature |> Async.RunSynchronou
 
 // Print the result
 printfn "Response: %s" result
+```
+
+### Composing Queries Using the `>>>` Operator
+
+fsEnsemble allows you to compose multiple LLM queries using functional composition with the `>>>` operator. This operator helps in creating a pipeline of LLM queries where the output of one function becomes the input for the next.
+
+#### Example: Generating, Reviewing, and Revising Code
+
+Here’s an example of how to chain three LLM functions: generating code, reviewing the generated code, and revising the code based on feedback.
+
+```fsharp
+open System
+
+// Define the custom operator for chaining LLM functions
+let (>>>) (firstFunction: string -> Async<string>) (nextFunction: string -> Async<string>) =
+    fun input -> async {
+        let! intermediateResult = firstFunction input
+        return! nextFunction intermediateResult
+    }
+
+// Function to simulate generating C# code from a prompt
+let generateCode (prompt: string) : Async<string> = async {
+    // Simulate LLM response
+    return $"""
+    // Generated C# code based on the prompt
+    public class HelloWorld
+    {{
+        public static void Main(string[] args)
+        {{
+            Console.WriteLine("Hello, World!");
+        }}
+    }}
+    """
+}
+
+// Function to simulate reviewing C# code and providing feedback
+let reviewCode (code: string) : Async<string> = async {
+    // Simulate LLM review feedback
+    return """
+    // Feedback: The code is correct, but it can be improved by adding error handling and comments.
+    // Consider adding exception handling for potential runtime errors.
+    """
+}
+
+// Function to simulate revising C# code based on feedback
+let reviseCode (input: string) : Async<string> = async {
+    // Split the input into original code and feedback
+    let parts = input.Split([|"\n// Feedback:"|], StringSplitOptions.RemoveEmptyEntries)
+    let originalCode = parts.[0]
+    let feedback = if parts.Length > 1 then parts.[1] else ""
+
+    // Simulate LLM revision based on feedback
+    return $"""
+    // Revised C# code with feedback incorporated
+    public class HelloWorld
+    {{
+        public static void Main(string[] args)
+        {{
+            try
+            {{
+                Console.WriteLine("Hello, World!");
+            }}
+            catch (Exception ex)
+            {{
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }}
+        }}
+    }}
+    // Feedback: {feedback.Trim()}
+    """
+}
+
+// Example chaining of LLM functions
+let chainExample = generateCode >>> reviewCode >>> reviseCode
+
+// Define a prompt for generating code
+let prompt = "Write a simple C# program that prints 'Hello, World!'"
+
+// Run the chained LLM functions with an input
+let result = chainExample prompt |> Async.RunSynchronously
+
+// Print the result
+printfn "%s" result
+```

@@ -80,10 +80,8 @@ let runLLMQuery (client: ILanguageModelClient) (prompt: string) (temperature: fl
     }
 
 // Function to compose two LLM query functions
-let composeFunctions (f1: string -> Async<string>) (f2: string -> Async<string>) =
-    fun input ->
-        async {
-            let! result1 = f1 input
-            let! result2 = f2 result1
-            return result2
-        }
+let (>>>) (firstFunction: string -> Async<string>) (nextFunction: string -> Async<string>) =
+    fun input -> async {
+        let! intermediateResult = firstFunction input
+        return! nextFunction intermediateResult
+    }
