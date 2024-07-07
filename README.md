@@ -34,11 +34,12 @@ To use fsEnsemble, you'll need to set up clients for the supported LLM providers
 open fsEnsemble
 
 // Read API keys from configuration file
-let openAiApiKey, googleGeminiApiKey = readApiKeys "config.json"
+let openAiApiKey, googleGeminiApiKey, claudeApiKey = readApiKeys "config.json"
 
 // Create instances of the LLM clients
-let chatGptClient = ChatGptClient(openAiApiKey, OpenAI_API.Models.Model.ChatGPT3_5Turbo) :> ILanguageModelClient
+let chatGptClient = ChatGptClient(openAiApiKey) :> ILanguageModelClient
 let googleGeminiClient = GoogleGeminiClient(googleGeminiApiKey) :> ILanguageModelClient
+let claudeClient = ClaudeClient(claudeApiKey) :> ILanguageModelClient
 
 // Define the temperature for the queries
 let temperature = Some 0.5
@@ -46,6 +47,7 @@ let temperature = Some 0.5
 // Create LLM query functions
 let chatGptQuery = createQueryFunction chatGptClient temperature
 let googleGeminiQuery = createQueryFunction googleGeminiClient temperature
+let claudeQuery = createQueryFunction claudeClient temperature
 
 // Define a sample prompt
 let prompt = "Tell me about the weather today."
