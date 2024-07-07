@@ -2,6 +2,7 @@ module fsEnsemble
 
 open System
 open System.IO
+open System.Threading.Tasks
 open Claudia
 open SharpToken
 open Newtonsoft.Json.Linq
@@ -16,7 +17,7 @@ type ContentResponse = { Response: string option }
 
 // Define the ILanguageModelClient interface
 type ILanguageModelClient =
-    abstract member GenerateContentAsync: ContentRequest -> Async<Result<ContentResponse, string>>
+    abstract member GenerateContentAsync: ContentRequest -> Task<Result<ContentResponse, string>>
     abstract member CountTokens: string -> int
 
 // ChatGPT client implementation
@@ -24,7 +25,7 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
 
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
-            async {
+            task {
                 try
                     let api = new OpenAIAPI(apiKey)
                     let chat = api.Chat.CreateConversation()
@@ -48,7 +49,7 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
 type GoogleGeminiClient(apiKey: string) =
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
-            async {
+            task {
                 try
                     let googleAi = new GoogleAI(apiKey)
                     let model = googleAi.GenerativeModel(model = Model.GeminiProLatest)
@@ -80,7 +81,7 @@ type ClaudeClient(apiKey: string) =
 
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
-            async {
+            task {
                 try
                     let messages = [| new Claudia.Message(Role= Role.User, Content = request.Prompt) |]
                     let messageRequest = new MessageRequest(Model=Claudia.Models.Claude3_5Sonnet, MaxTokens=4096, Messages=messages, Temperature = request.Temperature)                    
@@ -105,8 +106,8 @@ let readApiKeys (filePath: string) =
     openAiApiKey, googleGeminiApiKey, claudeApiKey
 
 // Function to run an LLM query
-let runLLMQuery (client: ILanguageModelClient) (prompt: string) (temperature: float) : Async<string> =
-    async {
+let runLLMQuery (client: ILanguageModelClient) (prompt: string) (temperature: float) : Task<string> =
+    task {
         let request =
             { Prompt = prompt
               Temperature = temperature }
