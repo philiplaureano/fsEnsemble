@@ -1,0 +1,11 @@
+﻿{
+  "OpenAI": {
+    "ApiKey": "your-openai-api-key"
+  },
+  "GoogleGemini": {
+    "ApiKey": "your-google-gemini-api-key"
+  },
+  "Claude": {
+    "ApiKey": "your-claude-api-key"
+  }
+}
