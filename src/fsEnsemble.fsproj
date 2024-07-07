@@ -3,26 +3,30 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Version>0.1.1</Version>
+        <Version>0.1.2</Version>
         <PackageVersion>$(Version)</PackageVersion>
         <PackageTags>LLM; FSharp; Composable; Functional</PackageTags>
-        
+
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Philip Laureano</Authors>
         <PackageProjectUrl>https://github.com/philiplaureano/fsEnsemble</PackageProjectUrl>
         <RepositoryUrl>https://github.com/philiplaureano/fsEnsemble</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="fsEnsemble.fs" />
+        <Compile Include="fsEnsemble.fs"/>
+        <Content Include="..\README.md">
+            <Link>README.md</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Mscc.GenerativeAI" Version="1.5.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="OpenAI" Version="1.11.0" />
+        <PackageReference Include="Mscc.GenerativeAI" Version="1.5.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="OpenAI" Version="1.11.0"/>
+        <PackageReference Include="SharpToken" Version="2.0.3"/>
     </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@ module fsEnsemble
 
 open System
 open System.IO
+open SharpToken
 open Newtonsoft.Json.Linq
 open OpenAI_API
 open OpenAI_API.Chat
@@ -20,9 +21,11 @@ type ContentResponse = {
 // Define the ILanguageModelClient interface
 type ILanguageModelClient =
     abstract member GenerateContentAsync : ContentRequest -> Async<Result<ContentResponse, string>>
+    abstract member CountTokens : string -> int
 
 // ChatGPT client implementation
 type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
+    
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
             async {
@@ -38,6 +41,10 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
                     return Ok { Response = Some response }
                 with ex -> return Error (sprintf "ChatGptClient error: %s" ex.Message)
             }
+        member _.CountTokens(input: string) =
+            let encoding = GptEncoding.GetEncodingForModel("gpt-4")
+            encoding.CountTokens(input)
+            
 
 // Google Gemini client implementation
 type GoogleGeminiClient(apiKey: string) =
@@ -47,7 +54,7 @@ type GoogleGeminiClient(apiKey: string) =
                 try
                     let googleAi = new GoogleAI(apiKey)
                     let model = googleAi.GenerativeModel(model = Model.GeminiProLatest)
-
+                    
                     let prompt = request.Prompt
                     let temperature = Convert.ToSingle request.Temperature
                     let generateMessageRequest = new GenerateMessageRequest(
@@ -58,6 +65,12 @@ type GoogleGeminiClient(apiKey: string) =
                     return Ok { Response = Some response.Text }
                 with ex -> return Error (sprintf "GoogleGeminiClient error: %s" ex.Message)
             }
+        member _.CountTokens(input: string) =
+            let googleAi = new GoogleAI(apiKey)
+            let model = googleAi.GenerativeModel(model = Model.GeminiProLatest)
+            let response = model.CountTokens(input).Result
+            response.TokenCount
+            
 
 // Function to read API keys from configuration file
 let readApiKeys (filePath: string) =
