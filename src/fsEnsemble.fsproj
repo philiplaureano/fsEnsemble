@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Version>0.1.4</Version>
+        <Version>0.1.5</Version>
         <PackageVersion>$(Version)</PackageVersion>
         <PackageTags>LLM; FSharp; Composable; Functional</PackageTags>
 
@@ -29,6 +29,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="OpenAI" Version="1.11.0"/>
         <PackageReference Include="SharpToken" Version="2.0.3"/>
+        <PackageReference Update="FSharp.Core" Version="8.0.301" />
     </ItemGroup>
-
 </Project>

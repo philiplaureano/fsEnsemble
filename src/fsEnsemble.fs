@@ -1,6 +1,7 @@
 module fsEnsemble
 
 open System
+open System.Collections.Generic
 open System.IO
 open System.Threading.Tasks
 open Claudia
@@ -20,6 +21,10 @@ type ILanguageModelClient =
     abstract member GenerateContentAsync: ContentRequest -> Task<Result<ContentResponse, string>>
     abstract member CountTokens: string -> int
 
+type IStreamingLanguageModelClient =
+    inherit ILanguageModelClient
+    abstract member GenerateContentStreamAsync: ContentRequest -> Task<IAsyncEnumerable<string>>
+    
 // ChatGPT client implementation
 type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
 
@@ -29,11 +34,12 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
                 try
                     let api = new OpenAIAPI(apiKey)
                     let chat = api.Chat.CreateConversation()
+                    
                     chat.Model <- chatModel
                     chat.RequestParameters.Temperature <- request.Temperature
 
                     chat.AppendUserInput(request.Prompt)
-
+                    
                     let! response = chat.GetResponseFromChatbotAsync() |> Async.AwaitTask
                     return Ok { Response = Some response }
                 with ex ->
@@ -62,7 +68,7 @@ type GoogleGeminiClient(apiKey: string) =
                             Prompt = new MessagePrompt(Context = prompt),
                             Temperature = new Nullable<float32>(temperature)
                         )
-
+                    
                     let! response = model.GenerateMessage(generateMessageRequest) |> Async.AwaitTask
                     return Ok { Response = Some response.Text }
                 with ex ->
@@ -125,7 +131,7 @@ let runLLMQuery (client: ILanguageModelClient) (prompt: string) (temperature: fl
 // Function to compose two LLM query functions
 let (>>>) (firstFunction: string -> Async<string>) (nextFunction: string -> Async<string>) =
     fun input ->
-        async {
+        async {           
             let! intermediateResult = firstFunction input
             return! nextFunction intermediateResult
         }
