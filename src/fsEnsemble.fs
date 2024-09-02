@@ -24,7 +24,7 @@ type ILanguageModelClient =
 type IStreamingLanguageModelClient =
     inherit ILanguageModelClient
     abstract member GenerateContentStreamAsync: ContentRequest -> Task<IAsyncEnumerable<string>>
-    
+
 // ChatGPT client implementation
 type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
 
@@ -34,12 +34,12 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
                 try
                     let api = new OpenAIAPI(apiKey)
                     let chat = api.Chat.CreateConversation()
-                    
+
                     chat.Model <- chatModel
                     chat.RequestParameters.Temperature <- request.Temperature
 
                     chat.AppendUserInput(request.Prompt)
-                    
+
                     let! response = chat.GetResponseFromChatbotAsync() |> Async.AwaitTask
                     return Ok { Response = Some response }
                 with ex ->
@@ -52,24 +52,18 @@ type ChatGptClient(apiKey: string, chatModel: OpenAI_API.Models.Model) =
 
 
 // Google Gemini client implementation
-type GoogleGeminiClient(apiKey: string) =
+type GoogleGeminiClient(apiKey: string, modelName: string) =
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
             task {
                 try
                     let googleAi = new GoogleAI(apiKey)
-                    let model = googleAi.GenerativeModel(model = Model.GeminiProLatest)
+                    let model = googleAi.GenerativeModel(model = modelName)
 
-                    let prompt = request.Prompt
-                    let temperature = Convert.ToSingle request.Temperature
+                    let generationConfig =
+                        new GenerationConfig(Temperature = Convert.ToSingle(request.Temperature))
 
-                    let generateMessageRequest =
-                        new GenerateMessageRequest(
-                            Prompt = new MessagePrompt(Context = prompt),
-                            Temperature = new Nullable<float32>(temperature)
-                        )
-                    
-                    let! response = model.GenerateMessage(generateMessageRequest) |> Async.AwaitTask
+                    let! response = model.GenerateContent(request.Prompt, generationConfig)
                     return Ok { Response = Some response.Text }
                 with ex ->
                     return Error(sprintf "GoogleGeminiClient error: %s" ex.Message)
@@ -81,16 +75,23 @@ type GoogleGeminiClient(apiKey: string) =
             let response = model.CountTokens(input).Result
             response.TokenCount
 
-// Anthropic Claude Sonnet 3.5 client implementation
-type ClaudeClient(apiKey: string) =
+// Anthropic LLMs. You'll need to bring your own API key and decide which model to use.
+type ClaudeClient(apiKey: string, modelName: string) =
     let anthropic = new Anthropic(ApiKey = apiKey)
 
     interface ILanguageModelClient with
         member _.GenerateContentAsync(request: ContentRequest) =
             task {
                 try
-                    let messages = [| new Claudia.Message(Role= Role.User, Content = request.Prompt) |]
-                    let messageRequest = new MessageRequest(Model=Claudia.Models.Claude3_5Sonnet, MaxTokens=4096, Messages=messages, Temperature = request.Temperature)                    
+                    let messages = [| new Claudia.Message(Role = Role.User, Content = request.Prompt) |]
+
+                    let messageRequest =
+                        new MessageRequest(
+                            Model = modelName,
+                            MaxTokens = 4096,
+                            Messages = messages,
+                            Temperature = request.Temperature
+                        )
 
                     let! response = anthropic.Messages.CreateAsync(messageRequest) |> Async.AwaitTask
                     let responseText = response.Content.ToString()
@@ -131,7 +132,7 @@ let runLLMQuery (client: ILanguageModelClient) (prompt: string) (temperature: fl
 // Function to compose two LLM query functions
 let (>>>) (firstFunction: string -> Async<string>) (nextFunction: string -> Async<string>) =
     fun input ->
-        async {           
+        async {
             let! intermediateResult = firstFunction input
             return! nextFunction intermediateResult
         }
